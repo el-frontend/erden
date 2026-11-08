@@ -4,7 +4,7 @@ GitHub for ontologies: versioned, proof-checked company knowledge that AI agents
 
 Open-source local tools for Erden: the `erden`/`den` CLI, registry client, contracts, local checking, package format, reasoner protocol, and both engines. Apache-2.0.
 
-The local tools in this repository are Apache-2.0 (see [LICENSE](/LICENSE)). The hosted Erden registry is closed source and not part of this repository. Publishing, discovery, and the web UI are provided by the hosted service at [erden.sh](https://erden.sh). Self-hosting isn't offered. The name "Erden" is a trademark of cbnsndwch LLC (see [TRADEMARKS.md](/TRADEMARKS.md)).
+The local tools in this repository are Apache-2.0 (see [LICENSE](/LICENSE)). The hosted Erden registry is closed source and not part of this repository. Publishing, discovery, and the web UI are provided by the hosted service at [erden.sh](https://erden.sh). Self-hosting isn't offered. The name "Erden" is a trademark of Ingenio Ventures Inc (see [TRADEMARKS.md](/TRADEMARKS.md)).
 
 ## What is here
 
@@ -24,12 +24,11 @@ source.
 
 ## Installing
 
-The first public release is being prepared. Until its archives are published, use the source build below.
-
 Each release has one archive per platform: Linux x64 and arm64 (glibc), macOS arm64 and Windows x64. An archive
 holds the `erden` CLI, the Node.js runtime it runs on, and both engines. Each release also has `install.sh`,
 `install.ps1` and `SHA256SUMS`. An install script carries its release's archive digests and refuses any other
-file. It installs for the current user, with no administrator rights, to `~/.local/share/erden/<version>/` with
+file. The tool uses the hosted registry at `https://registry.erden.sh` unless `--registry` or a project's manifest names
+another. It installs for the current user, with no administrator rights, to `~/.local/share/erden/<version>/` with
 `erden` and `den` linked into `~/.local/bin` (Windows: `%LOCALAPPDATA%\Programs\Erden\<version>\`).
 
 ```bash
@@ -68,6 +67,11 @@ These commands are for Linux x64. On Linux arm64, use `aarch64-unknown-linux-gnu
 On macOS arm64 and Windows x64, install the toolchain in `reasoner/rust-toolchain.toml`, build the reasoner
 with `pnpm run reasoner:build`, then run `pnpm run build:shacl` and `pnpm test`. The CLI finds that native
 reasoner in `reasoner/target/release/` without an environment override.
+
+If `pnpm run build:shacl` refuses its macOS or Windows build as not the pinned one, the host's Xcode or MSVC differs
+from the mint runner's. Build an unqualified local engine with `pnpm run shacl:build` and set
+`ERDEN_SHACL_BIN="$PWD/shacl/target/release/erden-shacl"`; it is used only while the variable is set, and only after it
+passes the pinned known answer (see [`shacl/distribution/README.md`](shacl/distribution/README.md)).
 
 `pnpm test` runs the workspace gate: the repository guards, formatting, lint, typecheck, the package packs, a packed
 CLI install, and every test.
